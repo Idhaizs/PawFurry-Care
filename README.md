@@ -1,137 +1,191 @@
-# 🐾 PawFurry Care Malaysia
+# 🐾 PawFurry Care
 
-> **Platform Telekesihatan Veterinar & Triage Kecemasan Kucing & Anjing Malaysia 24/7**  
-> *Bilingual (Bahasa Melayu & English) • Deterministic Clinical Triage • 24H Emergency Clinics GPS • Real-Time Seasonal Poison Guide • Verified Pet Health News*
+> **24/7 AI-Powered Veterinary Telehealth, Emergency Triage & 24-Hour Hospital GPS Directory**  
+> *Dedicated Exclusively to Cats & Dogs in Malaysia • Dual-Language (English & Bahasa Melayu) • Zero-Delay Deterministic Triage • Real-Time Seasonal Poison & Toxin Advisory*
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.0+-000000?style=flat&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![License](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-12%2F12%20Passing-brightgreen.svg)]()
+[![Security](https://img.shields.io/badge/Security-JWT%20%7C%20Bcrypt%20%7C%20Rate%20Limited-blue.svg)]()
 
 ---
 
-## 🌟 Gambaran Keseluruhan (Overview)
+## 🌟 Executive Summary
 
-**PawFurry Care** ialah platform digital komprehensif yang dibina khusus untuk pemilik **kucing (*cats*)** dan **anjing (*dogs*)** di Malaysia. Platform ini menggabungkan kecerdasan buatan, enjin triage kecemasan deterministik, dan direktori hospital veterinar 24 jam dengan integrasi GPS dan kesesakan jalan raya tempatan.
-
----
-
-## 🚀 Ciri-Ciri Utama (Core Features)
-
-### 1. 🤖 AI Pet Care Chatbot (Khusus Kucing & Anjing Sahaja)
-* **Pengawal Sempadan Domain Ketat (*Strict Cat & Dog Guardrail*):**
-  * Hanya melayan pertanyaan kesihatan, pemakanan, vaksinasi, dan tingkah laku bagi **kucing dan anjing**.
-  * Soalan luar topik (seperti *"nasi lemak sedap kat mana"*, resepi manusia, pengaturcaraan, politik) ditolak secara sopan.
-  * **Kecerdasan Klinikal:** Jika ditanya *"Boleh ke kucing makan nasi lemak?"*, sistem menerangkan secara terperinci bahaya santan (*pancreatitis*), sambal (*capsaicin*), dan bawang (*Heinz body hemolytic anemia*).
-* **Dwi-Bahasa (*Dual Language*):** Sokongan penuh dalam **Bahasa Melayu (BM)** dan **English (EN)**.
-* **Penyegerakan Musim Tropika (*Live Seasonal Advisory*):** Memasukkan amaran cuaca semasa (kurap & sporo semasa monsun, strok haba semasa musim panas) ke dalam nasihat bot.
-
-### 2. 🚨 Enjin Triage Kecemasan Veterinar (*Zero-Delay Triage Engine*)
-* **Pengesanan Simptom Bahaya Deterministik (*Red Alert*):**
-  * Saluran kencing tersumbat (*Urinary Blockage / FLUTD* pada kucing jantan).
-  * Keracunan ubat manusia (*Panadol / Paracetamol / Tylenol*).
-  * Keracunan bunga lili (*Lilies*).
-  * Perut kembung berpusing (*Bloat / GDV* pada anjing).
-  * Sesak nafas, sawan berterusan, atau pendarahan aktif.
-* **Protokol Pertolongan Cemas:** Panduan segera apa yang patut dibuat (**DOs**) dan dilarang (**DONTs**), serta pautan panggilan terus ke **Pusat Racun Negara (1-800-88-8099)** dan BOMBA (**999**).
-
-### 3. 🏥 Direktori Vet 24 Jam Malaysia & GPS Geolocation
-* Meliputi pusat rujukan kecemasan veterinar di Selangor, Kuala Lumpur, Pulau Pinang, Johor, Perak, Melaka, Pahang, Sarawak, dan Sabah.
-* **Status Operasi Waktu Sebenar (*Live Operating Hours*):** Mengira status buka/tutup klinik berdasarkan jam tempatan Malaysia (*DIBUKA SEKARANG 24 JAM* vs *TUTUP ON-CALL KECEMASAN*).
-* **Kiraan Trafik Waktu Puncak (*Peak-Hour Traffic Multiplier*):** Mengira anggaran masa pemanduan (ETA) mengikut waktu puncak jalan raya Malaysia (+40% hingga +45% masa perjalanan).
-* Pautan pantas navigasi ke **Google Maps** dan **Waze**.
-
-### 4. ⚠️ Panduan Toksin & Racun Haiwan Semasa
-* Ensiklopedia bahan kimia dan makanan toksik lazim (coklat, bawang, anggur/kismis, ubat gegat).
-* **Amaran Toksin Musiman Aktif (*Seasonal Hazard Spotlight*):** Amaran bahaya katak puru beracun (*Bufo*) dan asap ubat nyamuk lingkaran (*Pyrethroids*) pada musim hujan lebat/monsun.
-
-### 5. 📰 Berita & Panduan Penjagaan Malaysia (PawNews)
-* Artikel panduan penjagaan iklim tropika, amaran strok haba MetMalaysia, Akta Kebajikan Haiwan 2015 (Akta 772), dan pencegahan wabak Sporotrichosis (Sporo) & Rabies.
-
-### 6. 🛡️ Sistem Keselamatan Berlapis (*Enterprise Security*)
-* Penyulitan kata laluan menggunakan `bcrypt` dengan 12 *salt rounds*.
-* Pengesahan token stateless `PyJWT` (HS256).
-* *In-Memory Sliding Window Rate Limiting* untuk mencegah serangan *brute force* dan DDoS.
-* Pembersihan input (*HTML sanitization* / XSS prevention) dan *HTTP Security Headers* (`nosniff`, `DENY`, `CSP`).
+**PawFurry Care** is an enterprise-grade veterinary assistant and emergency triage web application engineered specifically for pet parents in Malaysia. Built on a modular Python (Flask) backend and lightweight reactive frontend, PawFurry Care delivers real-time clinical guidance, life-saving triage protocols, GPS routing to verified 24-hour veterinary emergency centres, and tropical climate hazard updates.
 
 ---
 
-## 📂 Struktur Projek (Project Structure)
+## 🚀 Key Platform Capabilities
+
+### 1. 🤖 AI Pet Care Chatbot (Strict Cat & Dog Scope Guardrail)
+* **Exclusive Feline & Canine Scope:** Engineered specifically for cats (*kucing*) and dogs (*anjing*).
+* **Strict Out-of-Domain Interceptor:** Non-pet inquiries (such as human cooking/recipes like *"nasi lemak"*, human weather, coding, politics, or non-canine/feline species) are politely declined.
+* **Clinical Nuance Detection:** If a user asks whether a pet can consume human food (e.g., *"Can cats eat nasi lemak?"*), the engine provides an in-depth clinical analysis explaining the physiological dangers of coconut milk (*pancreatitis*), chili/sambal (*capsaicin gastric erosion*), onions/garlic (*Heinz body hemolytic anemia*), and salted anchovies (*FLUTD urinary obstruction*).
+* **Bilingual Support (i18n):** Native support for **English (EN)** and **Bahasa Melayu (BM)**.
+* **Tropical Weather & Seasonal Advisory:** Seamlessly injects Malaysian seasonal warnings (e.g., high humidity ringworm & sporotrichosis risks, heatwave hyperthermia) into conversation contexts.
+
+### 2. 🚨 Deterministic Emergency Triage Engine (Zero-Delay)
+* **Instant Red-Flag Detection:** Eliminates AI hallucination latency during acute emergencies:
+  * Male cat urinary obstruction (*FLUTD / Blocked Bladder*).
+  * Human medication toxicity (*Paracetamol / Panadol / Tylenol / NSAIDs*).
+  * True lily ingestion (*Lilium & Hemerocallis* in cats).
+  * Gastric Dilatation-Volvulus (*GDV / Bloat* in dogs).
+  * Acute respiratory distress, refractory status epilepticus, or massive hemorrhage.
+* **Actionable First-Aid Guidance:** Provides immediate bulleted **DOs** and **DONTs**, paired with instant 1-tap dialers for the **National Poison Centre (1-800-88-8099)** and **BOMBA (999)**.
+
+### 3. 🏥 Verified 24-Hour Emergency Clinics & GPS Geolocation
+* Comprehensive coverage across Selangor, Kuala Lumpur, Penang, Johor, Perak, Melaka, Pahang, Sarawak, and Sabah.
+* **Real-Time Operational Status:** Evaluates active opening hours against local Malaysian time (`OPEN NOW (24 HOURS)` vs `CLOSED (EMERGENCY ON-CALL ACTIVE)`).
+* **Rush-Hour Traffic ETA Multiplier:** Automatically recalculates estimated driving times based on Malaysian rush-hour traffic conditions (+40% to +45% during morning & evening commutes).
+* Direct turn-by-turn routing via **Google Maps** and **Waze**.
+
+### 4. ⚠️ Household & Seasonal Poison Encyclopedia
+* Comprehensive catalog of toxic substances, mechanism of toxicity, and specific clinical signs.
+* **Live Seasonal Hazard Spotlight:** Dynamically updates hazards according to Malaysian weather patterns (e.g., toxic *Asian Common Toads (Bufo)* emerging after tropical rains, and mosquito coil pyrethroid toxicity in felines).
+
+### 5. 📰 Malaysian Pet Care News & Official Advisories
+* Localized articles on heatstroke prevention, Malaysian Animal Welfare Act 2015 (Act 772), regional outbreaks (Rabies surveillance zones, Sporotrichosis), and nutritional myths.
+
+### 6. 🛡️ Multi-Layered Security Architecture
+* Password hashing using `bcrypt` with 12 algorithmic salt rounds.
+* Stateless `PyJWT` authentication with configurable token expiration.
+* In-memory sliding window rate limiting across authentication and chat endpoints.
+* Strict XSS sanitization and HTTP Security Headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 1; mode=block`).
+
+---
+
+## 🏗️ Architecture & Project Structure
 
 ```text
-mypet-care-malaysia/
-├── app.py                 # Pelayan Flask, API endpoints & router utama
-├── chat_service.py        # Enjin perbualan AI, penapis domain kucing/anjing & buletin musim
-├── config.py              # Konfigurasi sistem, secret keys & had kadar (rate limits)
-├── database.py            # Skema pangkalan data SQLite & fungsi CRUD
-├── emergency_data.py      # Direktori vet Malaysia, formula Haversine & kalkulator trafik
-├── news_data.py           # Pangkalan data berita dwi-bahasa & amaran cuaca
-├── security.py            # Keselamatan JWT, bcrypt, XSS sanitization & headers
-├── test_system.py         # 12 kes ujian unit & integrasi automatik
-├── triage_engine.py       # Enjin triage kecemasan & ensiklopedia toksin musiman
-├── requirements.txt       # Senarai kebergantungan (dependencies) Python
-├── .env.example           # Contoh pembolehubah persekitaran (environment variables)
-├── .gitignore             # Fail pengecualian Git (database, secrets, cache)
+PawFurry-Care/
+├── app.py                 # Core Flask application, RESTful APIs & security middleware
+├── chat_service.py        # Bilingual AI assistant, domain guardrail & seasonal logic
+├── config.py              # Environment configuration & rate limit definitions
+├── database.py            # SQLite schema initialisation & CRUD queries
+├── emergency_data.py      # Malaysian vet clinic directory, Haversine formula & traffic engine
+├── news_data.py           # Bilingual pet healthcare advisories & weather alerts
+├── security.py            # JWT token engine, bcrypt hashing & input sanitizers
+├── test_system.py         # Automated test suite (12/12 unit & integration tests)
+├── triage_engine.py       # Deterministic clinical triage & seasonal poison encyclopedia
+├── requirements.txt       # Production Python dependencies
+├── Procfile               # Cloud deployment process file (Gunicorn)
+├── .env.example           # Environment variable template
+├── .gitignore             # Git exclusions (database, local secrets, bytecode)
 ├── templates/
-│   └── index.html         # Antaramuka web responsif (TailwindCSS + FontAwesome)
+│   └── index.html         # Responsive frontend application (TailwindCSS + FontAwesome)
 └── static/
     ├── css/
-    │   └── custom.css     # Gaya CSS khas
+    │   └── custom.css     # Bespoke UI styles
     └── js/
-        └── app.js         # Pengawal logik frontend, dwi-bahasa i18n & auto-sync senyap
+        └── app.js         # Reactive client controller, i18n & silent auto-sync
 ```
 
 ---
 
-## 🛠️ Cara Pemasangan & Menjalankan Sistem (Getting Started)
+## ⚙️ Quickstart & Local Installation
 
-### 1. Klon Repositori
+### Prerequisites
+* **Python 3.10+** (Tested on Python 3.11)
+* **Git**
+
+### 1. Clone Repository
 ```bash
 git clone https://github.com/Idhaizs/PawFurry-Care.git
 cd PawFurry-Care
 ```
 
-### 2. Pasang Kebergantungan (Dependencies)
-Disarankan menggunakan persekitaran maya (*virtual environment*):
+### 2. Set Up Virtual Environment
 ```bash
+# Create virtual environment
 python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
 
+# Activate on Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+
+# Activate on macOS / Linux:
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+```bash
 pip install -r requirements.txt
 ```
 
-### 3. Konfigurasi Fail `.env` (Pilihan)
-Salin fail contoh `.env.example` kepada `.env`:
+### 4. Configure Environment Variables
+Copy `.env.example` to `.env`:
 ```bash
 cp .env.example .env
 ```
+*(Optional: Add your `GEMINI_API_KEY` to enable Google Gemini AI fallback. If omitted, the platform uses its built-in deterministic veterinary knowledge base.)*
 
-### 4. Jalankan Ujian Automatik
-Pastikan semua modul berfungsi dengan baik:
+### 5. Execute Test Suite
+Verify that all 12 automated unit and integration tests pass:
 ```bash
 python test_system.py
 ```
-*(Keputusan yang dijangka: 12 tests OK)*
+```text
+Ran 12 tests in 0.063s
+OK
+[PASS] Health Check Endpoint (PawFurry Care v1.2)
+[PASS] Dual-Language (BM & EN) News Listing
+[PASS] Live News Auto-Update Sync Endpoint
+[PASS] Emergency Triage in English (Paracetamol Toxicity): CRITICAL Red Alert
+[PASS] Emergency Triage in Bahasa Melayu (Urinary Blockage): CRITICAL Red Alert
+[PASS] Bilingual Chat for Cats and Dogs (English & Bahasa Melayu)
+[PASS] Malaysia 24H Emergency Clinics & GPS Haversine Sort
+[PASS] Production HTTP Security Headers
+[PASS] Strict Chat Guardrail: Successfully intercepted off-topic queries
+[PASS] Chat Knowledge: 'Can cats eat nasi lemak?' clinical explanation
+[PASS] Master System Auto-Sync Endpoint: Synchronized all 4 pillars
+[PASS] Live Seasonal Toxin Guide: Active Monsoon Hazard Spotlight
+```
 
-### 5. Mulakan Pelayan Web
+### 6. Run Application
 ```bash
 python app.py
 ```
-Buka pelayar web di:
+Open your browser and navigate to:  
 👉 **`http://127.0.0.1:5000`**
 
 ---
 
-## 🔒 Privasi & Keselamatan Data
+## 🌐 Cloud Deployment Guide
 
-* **Tiada Data Sensitif Dikongsi:** Fail pangkalan data tempatan (`petcare.db`) dan kunci rahsia (`.env`) dikecualikan secara ketat melalui `.gitignore`.
-* **Pematuhan Perubatan:** Nasihat sistem berfungsi sebagai triage maklumat am dan sentiasa mengutamakan rujukan kepada doktor veterinar bertauliah berdaftar.
+Because **PawFurry Care** incorporates a full Python backend, SQLite database, and deterministic API services, it requires a Python host rather than static-only hosting.
+
+### Option A: Deploy on Render (Recommended - Free Tier)
+1. Sign up / Log in to [Render](https://render.com/).
+2. Click **New +** → Select **Web Service**.
+3. Connect your GitHub repository: `Idhaizs/PawFurry-Care`.
+4. Configure settings:
+   * **Runtime:** `Python 3`
+   * **Build Command:** `pip install -r requirements.txt`
+   * **Start Command:** `gunicorn app:app`
+5. Click **Create Web Service**. Your app will be live with a free HTTPS URL in 2 minutes!
+
+### Option B: Deploy on Railway
+1. Sign up on [Railway.app](https://railway.app/).
+2. Select **New Project** → **Deploy from GitHub repo**.
+3. Select `PawFurry-Care`. Railway will automatically detect the Python environment and `Procfile`, deploying the live application automatically.
+
+### Option C: Deploy on PythonAnywhere
+1. Create a free account on [PythonAnywhere](https://www.pythonanywhere.com/).
+2. In the **Web** tab, select **Add a new web app** → **Flask** → **Python 3.10+**.
+3. Clone the repository into your home directory and set the WSGI configuration to point to `app:app`.
 
 ---
 
-## 👨‍💻 Pengarang & Hak Cipta
-Dibangunkan untuk komuniti pencinta haiwan di Malaysia.  
-Hak Cipta © 2026 **PawFurry Care Malaysia**.
+## 🔒 Security & Privacy Notice
+
+* **Data Protection:** Local databases (`petcare.db`) and secret tokens (`.env`) are strictly excluded from version control via `.gitignore`.
+* **Clinical Disclaimer:** PawFurry Care serves as a digital veterinary triage and health education platform. In persistent or life-threatening clinical circumstances, pet owners must seek examination from a certified, registered veterinarian immediately.
+
+---
+
+## 📄 License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+Developed with ❤️ for the Malaysian pet parent community.  
+Copyright © 2026 **PawFurry Care Malaysia**.
