@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite Database (CRITICAL: Do NOT push user data, hashes, or local databases)
+*.db
+*.sqlite
+*.sqlite3
+petcare.db
+
+# Sensitive Environment Configurations & API Keys
+.env
+.env.local
+.env.*.local
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

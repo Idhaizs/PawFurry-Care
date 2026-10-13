@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawFurry Care - AI Pet Care, Emergency Triage & Malaysia News</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js for Markdown Responses & News Articles -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/css/custom.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- TOP EMERGENCY ALERT BANNER (HIDDEN BY DEFAULT) -->
+    <div id="emergencyTopBanner" class="hidden bg-rose-600 text-white px-4 py-3 shadow-lg sticky top-0 z-50 animate-pulse">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <span class="p-2 bg-white/20 rounded-full text-xl animate-bounce">🚨</span>
+                <div>
+                    <h4 class="font-bold text-sm sm:text-base tracking-wide" id="bannerEmergencyTitle">KECEMASAN VETERINAR DIKESAN!</h4>
+                    <p class="text-xs text-rose-100" id="bannerEmergencySubtitle">Sila hubungi klinik vet 24 jam atau Pusat Racun Negara sekarang.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a id="bannerCallBtn" href="tel:1800888099" class="px-4 py-1.5 bg-white text-rose-700 font-bold text-xs rounded-full hover:bg-rose-50 shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-phone"></i> <span id="bannerCallText">Hubungi Sekarang</span>
+                </a>
+                <button onclick="triggerEmergencyGps()" class="px-3 py-1.5 bg-rose-800 text-white text-xs font-semibold rounded-full hover:bg-rose-900 transition flex items-center gap-1">
+                    <i class="fa-solid fa-location-dot"></i> <span id="bannerGpsText">Cari Vet Terdekat</span>
+                </button>
+                <button onclick="dismissEmergencyBanner()" class="text-white hover:text-rose-200 text-sm ml-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <!-- Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-600/25">
+                    <i class="fa-solid fa-paw text-xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="text-xl font-black bg-gradient-to-r from-emerald-700 via-teal-700 to-teal-600 bg-clip-text text-transparent leading-none">PawFurry Care</h1>
+                        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-1.5 py-0.5 rounded-md">MY</span>
+                    </div>
+                    <span id="navSubtitle" class="text-[10px] font-semibold text-slate-500 tracking-wider flex items-center gap-1 mt-0.5">
+                        Malaysia 24/7 AI Pet Care & Emergency Triage
+                    </span>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Dual Language Switcher [BM | EN] -->
+                <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+                    <button id="langBtnMs" onclick="changeLanguage('ms')" class="px-2.5 py-1 text-xs rounded-lg transition bg-white text-emerald-700 shadow-2xs">
+                        BM
+                    </button>
+                    <button id="langBtnEn" onclick="changeLanguage('en')" class="px-2.5 py-1 text-xs font-semibold text-slate-500 rounded-lg transition hover:text-slate-800">
+                        EN
+                    </button>
+                </div>
+
+                <!-- SOS Emergency Button -->
+                <button onclick="openSosModal()" class="px-3 sm:px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl shadow-md shadow-rose-600/30 flex items-center gap-1.5 transition active:scale-95">
+                    <i class="fa-solid fa-truck-medical text-rose-200 animate-pulse"></i>
+                    <span id="sosBtnText">SOS KECEMASAN</span>
+                </button>
+
+                <!-- Hotline Quick Dial -->
+                <a href="tel:1800888099" title="National Poison Centre Hotline" class="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition">
+                    <i class="fa-solid fa-phone text-rose-600"></i>
+                    <span>1-800-88-8099</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs (Single clean icon per item) -->
+        <div class="max-w-6xl mx-auto px-4 flex border-t border-slate-100 overflow-x-auto no-scrollbar">
+            <button onclick="switchTab('chat')" id="tab-btn-chat" class="tab-btn active px-4 py-2.5 text-xs font-bold text-emerald-600 border-b-2 border-emerald-600 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-comments"></i> <span id="tabLabelChat">AI Pet Care Chat</span>
+            </button>
+            <button onclick="switchTab('news')" id="tab-btn-news" class="tab-btn px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 border-b-2 border-transparent flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-newspaper text-teal-600"></i> <span id="tabLabelNews">Berita & Panduan Malaysia</span>
+            </button>
+            <button onclick="switchTab('emergency')" id="tab-btn-emergency" class="tab-btn px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 border-b-2 border-transparent flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-truck-medical text-rose-500"></i> <span id="tabLabelEmergency">Vet 24 Jam & Hotline (GPS)</span>
+            </button>
+            <button onclick="switchTab('toxins')" id="tab-btn-toxins" class="tab-btn px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 border-b-2 border-transparent flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-shield-halved text-amber-500"></i> <span id="tabLabelToxins">Panduan Racun & Toksin</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 flex flex-col">
+
+        <!-- ================= SECTION 1: CHATBOT TAB ================= -->
+        <section id="section-chat" class="tab-section flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden min-h-[560px]">
+            <!-- Chat Header -->
+            <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <div>
+                        <h2 class="text-sm font-bold text-slate-800" id="chatAssistantTitle">PawFurry Care - Pembantu Maya Veterinar Malaysia</h2>
+                        <p class="text-[11px] text-slate-500" id="chatAssistantSubtitle">Khusus Kucing & Anjing • Triage Kecemasan & Penjagaan Tropika Malaysia</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="clearChatScreen()" title="Clear Chat" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-200 transition text-xs">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <span id="chatBadgeTriage" class="text-[11px] bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                        <i class="fa-solid fa-shield-cat text-emerald-600"></i> <span id="chatBadgeTriageText">Kucing & Anjing Sahaja</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Suggestion Pills -->
+            <div class="px-4 py-2 bg-slate-100/60 border-b border-slate-200 overflow-x-auto flex items-center gap-2 no-scrollbar text-xs" id="quickPillsContainer">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Chat Messages Log -->
+            <div id="chatMessages" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 max-h-[500px]">
+                <!-- Initial Welcome Message dynamically injected -->
+            </div>
+
+            <!-- Chat Input Box -->
+            <div class="p-3 sm:p-4 bg-slate-50 border-t border-slate-200">
+                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
+                    <input type="text" id="chatInput" placeholder="Tanya soalan penjagaan atau simptom (cth: 'Kucing muntah buih' atau 'Bila patut vaksin?')..." class="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-2xs">
+                    <button type="submit" id="chatSendBtn" class="px-4 sm:px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-sm transition flex items-center gap-1.5 shrink-0">
+                        <span id="sendBtnText">Hantar</span>
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </form>
+                <p id="chatDisclaimerText" class="text-[10px] text-slate-400 mt-1.5 text-center">
+                    ⚠️ Nasihat ini bertujuan sebagai panduan maklumat am kesihatan haiwan. Dalam situasi kecemasan klinikal, sentiasa bawa ke klinik veterinar bertauliah.
+                </p>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: NEWS & CARE ARTICLES ================= -->
+        <section id="section-news" class="tab-section hidden space-y-6">
+            <!-- Header Banner -->
+            <div class="bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 text-white p-5 sm:p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-5">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-wider mb-2" id="newsBannerTag">
+                        🇲🇾 Berita & Panduan Penjagaan Malaysia
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-black" id="newsBannerTitle">Informasi Terkini Kesihatan Haiwan Tempatan</h2>
+                    <p class="text-teal-100 text-xs sm:text-sm mt-1 max-w-xl" id="newsBannerSubtitle">
+                        Rujukan sahih berkaitan cuaca tropika, amaran musim banjir/hujan, wabak serantau (Sporo, Rabies), undang-undang kebajikan haiwan (Akta 772), serta panduan diet selamat.
+                    </p>
+                </div>
+                <!-- Search Box -->
+                <div class="w-full md:w-72">
+                    <div class="relative">
+                        <input type="text" id="newsSearchInput" oninput="onSearchNews(this.value)" placeholder="Cari artikel (cth: sporo, rabies, haba)..." class="w-full pl-9 pr-4 py-2.5 bg-white text-slate-800 text-xs rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-white">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Live Sync Tracker Bar -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200 text-xs shadow-2xs">
+                <div class="flex items-center gap-2">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-slate-700 font-medium" id="liveSyncStatusText">
+                        🟢 <strong>Live Sync Aktif:</strong> Berita dan amaran cuaca dikemaskini secara automatik
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                    <span id="lastSyncTimeText" class="text-slate-400 text-[11px]">Dikemaskini secara langsung</span>
+                    <button onclick="triggerLiveNewsRefresh()" id="refreshNewsBtn" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition flex items-center gap-1.5 shadow-2xs">
+                        <i class="fa-solid fa-arrows-rotate text-xs"></i> <span id="refreshBtnLabel">Kemaskini Sekarang</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs" id="newsCategoriesContainer">
+                <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- Articles Grid -->
+            <div>
+                <div class="flex items-center justify-between mb-3 text-xs text-slate-500 font-medium">
+                    <span id="newsShowingCountText">Menunjukkan <strong id="newsCount" class="text-slate-800">0</strong> panduan artikel</span>
+                    <span class="text-emerald-700 font-semibold" id="newsVerifiedBadge"><i class="fa-solid fa-check-circle text-xs"></i> Ditentusahkan Doktor Veterinar</span>
+                </div>
+                <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Populated dynamically via JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: EMERGENCY & MALAYSIA DIRECTORY TAB ================= -->
+        <section id="section-emergency" class="tab-section hidden space-y-6">
+            <!-- GPS Action Banner -->
+            <div class="bg-gradient-to-r from-rose-600 via-rose-700 to-red-800 text-white p-5 sm:p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-5">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-wider mb-2" id="gpsBannerTag">
+                        🚨 Direktori Kecemasan Veterinar Malaysia
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-black" id="gpsBannerTitle">Cari Hospital Vet 24 Jam Paling Dekat</h2>
+                    <p class="text-rose-100 text-xs sm:text-sm mt-1 max-w-xl" id="gpsBannerSubtitle">
+                        Kesan koordinat GPS semasa anda untuk mengira jarak tepat (KM) dan anggaran masa pemanduan ke hospital veterinar beroperasi 24 jam di Malaysia.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <button onclick="findNearbyClinicsGps()" id="gpsLocateBtn" class="px-5 py-3 bg-white text-rose-700 hover:bg-rose-50 font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-location-crosshairs text-base"></i>
+                        <span id="gpsLocateBtnText">Kesan Lokasi Saya (GPS)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- National Official Hotlines Grid -->
+            <div>
+                <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2" id="hotlineHeaderTitle">
+                    <i class="fa-solid fa-phone-volume text-rose-600"></i> Talian Hotline Kecemasan Kebangsaan
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="hotlinesList">
+                    <!-- Loaded dynamically via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Filter Clinics Controls -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-semibold text-slate-600" id="filterStateLabel">Tapis Negeri:</label>
+                    <select id="stateFilterSelect" onchange="filterClinics()" class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-emerald-500 focus:outline-none">
+                        <option value="Semua">Semua Negeri / All States</option>
+                        <option value="Selangor">Selangor</option>
+                        <option value="Kuala Lumpur">Kuala Lumpur</option>
+                        <option value="Pulau Pinang">Pulau Pinang</option>
+                        <option value="Johor">Johor</option>
+                        <option value="Perak">Perak</option>
+                        <option value="Melaka">Melaka</option>
+                        <option value="Pahang">Pahang</option>
+                        <option value="Sarawak">Sarawak</option>
+                        <option value="Sabah">Sabah</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="only24hCheckbox" onchange="filterClinics()" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                    <label for="only24hCheckbox" class="text-xs font-semibold text-slate-700 cursor-pointer" id="filter24hLabel">
+                        Hanya Tunjukkan Klinik 24 Jam
+                    </label>
+                </div>
+            </div>
+
+            <!-- Real-Time Clinic Operations & Traffic Status Bar -->
+            <div id="liveTrafficStatusContainer" class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-emerald-950">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="liveTrafficStatusText">Memeriksa status waktu operasi klinik terkini & trafik semasa...</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="liveClinicsOpenBadge" class="bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded-full text-[10px]">
+                        12/12 Klinik Dibuka
+                    </span>
+                    <span id="liveTrafficBadge" class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[10px]">
+                        Trafik Lancar
+                    </span>
+                </div>
+            </div>
+
+            <!-- Clinics Cards Grid -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-hospital text-emerald-600"></i> <span id="clinicHeaderTitle">Senarai Hospital & Klinik</span> (<span id="clinicCount">0</span>)
+                    </h3>
+                    <span id="gpsStatusBadge" class="hidden text-[11px] bg-rose-100 text-rose-800 font-semibold px-2.5 py-0.5 rounded-full">
+                        📍 Disusun mengikut jarak terdekat
+                    </span>
+                </div>
+                <div id="clinicsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: TOXIN ENCYCLOPEDIA TAB ================= -->
+        <section id="section-toxins" class="tab-section hidden space-y-6">
+            <div class="bg-amber-500 text-slate-900 p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <span class="inline-block px-2.5 py-0.5 bg-black/10 rounded-full text-[11px] font-bold uppercase tracking-wider mb-1" id="toxinBannerTag">
+                        Ensiklopedia Keselamatan Haiwan
+                    </span>
+                    <h2 class="text-xl font-black" id="toxinBannerTitle">Bahan & Makanan Toksik di Rumah</h2>
+                    <p class="text-xs text-slate-800 mt-1 max-w-xl" id="toxinBannerSubtitle">
+                        Senarai bahan lazim yang kerap menyebabkan keracunan maut pada kucing dan anjing di Malaysia.
+                    </p>
+                </div>
+                <div class="p-3 bg-white/30 backdrop-blur rounded-xl text-center">
+                    <span class="text-xs font-bold block" id="toxinHotlineLabel">Talian Keracunan:</span>
+                    <a href="tel:1800888099" class="text-base font-black text-slate-950 underline">1-800-88-8099</a>
+                </div>
+            </div>
+
+            <!-- Real-time Seasonal Poison Hazard Advisory -->
+            <div id="toxinSeasonalAlertContainer" class="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs space-y-1.5 shadow-2xs">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-amber-950 flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i>
+                        <span id="seasonalToxinTitle">Peringatan Toksin & Racun Musiman (Auto-Updated)</span>
+                    </span>
+                    <span id="seasonalToxinBadge" class="bg-amber-200 text-amber-900 font-bold px-2.5 py-0.5 rounded-full text-[10px]">
+                        BAHAYA MUSIMAN
+                    </span>
+                </div>
+                <p id="seasonalToxinDesc" class="text-amber-900 text-xs leading-relaxed">
+                    Memuatkan analisis bahaya racun musim terkini di Malaysia...
+                </p>
+                <div class="text-[10px] text-amber-700/80 pt-1 border-t border-amber-200/60 flex items-center justify-between">
+                    <span id="seasonalToxinSyncTime">Auto-Synced: Waktu Malaysia</span>
+                    <span>Sumber: Pusat Racun Negara & MAVMA</span>
+                </div>
+            </div>
+
+            <div id="toxinsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Loaded via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-4 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>© 2026 <strong>PawFurry Care Malaysia</strong>. <span id="footerText1">Sistem Keselamatan & Sokongan Veterinar Bersepadu.</span></p>
+            <p class="text-[11px] text-slate-400" id="footerText2">Direka khas untuk pemilik haiwan di Malaysia • Dilengkapi Perlindungan Triage Pintar</p>
+        </div>
+    </footer>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. SOS MODAL -->
+    <div id="sosModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-rose-200 relative animate-scaleUp">
+            <button onclick="closeSosModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-5">
+                <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner">
+                    <i class="fa-solid fa-truck-medical animate-bounce"></i>
+                </div>
+                <h3 class="text-xl font-black text-rose-700" id="sosModalTitle">Panggilan Kecemasan Veterinar (PawFurry SOS)</h3>
+                <p class="text-xs text-slate-600 mt-1" id="sosModalSubtitle">Pilih talian bantuan kecemasan serta-merta mengikut situasi haiwan anda:</p>
+            </div>
+
+            <div class="space-y-3">
+                <a href="tel:1800888099" class="p-4 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-2xl flex items-center justify-between group transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-skull-crossbones"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-800" id="sosPrnTitle">Pusat Racun Negara (PRN)</h4>
+                            <p class="text-[11px] text-slate-500">1-800-88-8099 (24 Hours Toll-Free)</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1.5 bg-rose-600 text-white font-bold text-xs rounded-xl shadow-xs">
+                        Call <i class="fa-solid fa-phone text-[10px] ml-1"></i>
+                    </span>
+                </a>
+
+                <a href="tel:999" class="p-4 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-2xl flex items-center justify-between group transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-fire-extinguisher"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-800" id="sosBombaTitle">BOMBA Malaysia (999)</h4>
+                            <p class="text-[11px] text-slate-500" id="sosBombaSub">Penyelamatan haiwan terperangkap / darurat</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1.5 bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs">
+                        Call 999 <i class="fa-solid fa-phone text-[10px] ml-1"></i>
+                    </span>
+                </a>
+
+                <button onclick="closeSosModal(); switchTab('emergency'); findNearbyClinicsGps();" class="w-full p-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-2xl flex items-center justify-between group transition text-left">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-location-arrow"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-800" id="sosGpsTitle">Navigasi ke Vet 24 Jam Terdekat</h4>
+                            <p class="text-[11px] text-slate-500" id="sosGpsSub">Kira jarak GPS & pandu arah segera</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-xs">
+                        GPS <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ARTICLE READER MODAL (FULL SCREEN ARTICLE POPUP) -->
+    <div id="articleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative my-8 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeArticleModal()" class="sticky top-0 float-right -mt-2 -mr-2 bg-slate-100 hover:bg-slate-200 text-slate-500 w-8 h-8 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Article Details Header -->
+            <div class="mb-4">
+                <span id="artCategoryBadge" class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-[11px] font-extrabold rounded-full mb-2">
+                    Kategori
+                </span>
+                <h2 id="artTitle" class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                    Tajuk Artikel
+                </h2>
+                <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-2 pb-3 border-b border-slate-100">
+                    <span id="artAuthor"><i class="fa-solid fa-user-doctor text-emerald-600 mr-1"></i> Pengarang</span>
+                    <span>•</span>
+                    <span id="artDate"><i class="fa-regular fa-calendar mr-1"></i> Tarikh</span>
+                    <span>•</span>
+                    <span id="artReadTime"><i class="fa-regular fa-clock mr-1"></i> 3 min</span>
+                </div>
+            </div>
+
+            <!-- Full Article Content Rendered via Markdown -->
+            <div id="artContent" class="markdown-body text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+                <!-- Content injected via JS -->
+            </div>
+
+            <!-- Tags -->
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <span class="text-[11px] font-bold text-slate-400 block mb-2" id="artTagsLabel">Topik Berkaitan:</span>
+                <div id="artTags" class="flex flex-wrap gap-1.5">
+                    <!-- Tags -->
+                </div>
+            </div>
+
+            <!-- Modal Footer Action -->
+            <div class="mt-6 flex items-center justify-between">
+                <button onclick="closeArticleModal()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition" id="artCloseBtn">
+                    Tutup
+                </button>
+                <button onclick="closeArticleModal(); switchTab('chat'); sendQuickPrompt(currentLang === 'en' ? 'I would like to ask more about this topic: ' + document.getElementById('artTitle').innerText : 'Saya ingin tanya lebih lanjut tentang artikel: ' + document.getElementById('artTitle').innerText)" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-comments"></i> <span id="artAskAiBtn">Tanya AI Pasal Topik Ini</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
