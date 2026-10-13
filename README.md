@@ -48,12 +48,6 @@
 ### 5. 📰 Malaysian Pet Care News & Official Advisories
 * Localized articles on heatstroke prevention, Malaysian Animal Welfare Act 2015 (Act 772), regional outbreaks (Rabies surveillance zones, Sporotrichosis), and nutritional myths.
 
-### 6. 🛡️ Multi-Layered Security Architecture
-* Password hashing using `bcrypt` with 12 algorithmic salt rounds.
-* Stateless `PyJWT` authentication with configurable token expiration.
-* In-memory sliding window rate limiting across authentication and chat endpoints.
-* Strict XSS sanitization and HTTP Security Headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 1; mode=block`).
-
 ---
 
 ## 🏗️ Architecture & Project Structure
@@ -148,32 +142,6 @@ python app.py
 ```
 Open your browser and navigate to:  
 👉 **`http://127.0.0.1:5000`**
-
----
-
-## 🌐 Cloud Deployment Guide
-
-Because **PawFurry Care** incorporates a full Python backend, SQLite database, and deterministic API services, it requires a Python host rather than static-only hosting.
-
-### Option A: Deploy on Render (Recommended - Free Tier)
-1. Sign up / Log in to [Render](https://render.com/).
-2. Click **New +** → Select **Web Service**.
-3. Connect your GitHub repository: `Idhaizs/PawFurry-Care`.
-4. Configure settings:
-   * **Runtime:** `Python 3`
-   * **Build Command:** `pip install -r requirements.txt`
-   * **Start Command:** `gunicorn app:app`
-5. Click **Create Web Service**. Your app will be live with a free HTTPS URL in 2 minutes!
-
-### Option B: Deploy on Railway
-1. Sign up on [Railway.app](https://railway.app/).
-2. Select **New Project** → **Deploy from GitHub repo**.
-3. Select `PawFurry-Care`. Railway will automatically detect the Python environment and `Procfile`, deploying the live application automatically.
-
-### Option C: Deploy on PythonAnywhere
-1. Create a free account on [PythonAnywhere](https://www.pythonanywhere.com/).
-2. In the **Web** tab, select **Add a new web app** → **Flask** → **Python 3.10+**.
-3. Clone the repository into your home directory and set the WSGI configuration to point to `app:app`.
 
 ---
 
