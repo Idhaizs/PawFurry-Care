@@ -145,10 +145,9 @@ Open your browser and navigate to:
 
 ---
 
-## 🔒 Security & Privacy Notice
+## 🩺 Clinical Disclaimer
 
-* **Data Protection:** Local databases (`petcare.db`) and secret tokens (`.env`) are strictly excluded from version control via `.gitignore`.
-* **Clinical Disclaimer:** PawFurry Care serves as a digital veterinary triage and health education platform. In persistent or life-threatening clinical circumstances, pet owners must seek examination from a certified, registered veterinarian immediately.
+PawFurry Care serves as a digital veterinary triage and health education platform. In persistent or life-threatening clinical circumstances, pet owners must seek examination from a certified, registered veterinarian immediately.
 
 ---
 
